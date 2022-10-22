@@ -9,11 +9,11 @@ options.add_argument("--headless")
 driver = webdriver.Firefox(options=options)
 
 
-driver.get('https://www.mundogalapagos.com.br/jogo-de-cartas-dobble-pixar/produto/DOB016')
+driver.get('https://www.mundogalapagos.com.br/jogo-de-cartas-dobble-harry-potter/produto/DOB006')
 
 time.sleep(5)
 
-ts = driver.find_elements(By.TAG_NAME , 'span')
+ts = driver.find_elements(By.CLASS_NAME , 'info-item-text')
 print(len(ts))
 for i in range(0, len(ts)):
     print(ts[i].text + " (" + str(i) + ")/n")
