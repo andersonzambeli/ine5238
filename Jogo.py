@@ -9,7 +9,7 @@ class Jogo():
         self.idade = idade
         self.tempoJogo = tempoJogo
         self.editora = editora
-        self.siteFote = siteFonte
+        self.siteFonte = siteFonte
         self.preco = preco
 
 
