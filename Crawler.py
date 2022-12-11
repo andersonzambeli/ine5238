@@ -6,18 +6,28 @@ from selenium.webdriver.common.keys import Keys
 from Jogo import *
 import time
 
+class Crawler():
 
-class CrawlerGalapagos():
-
-    def __init__(self, titulo, url, jogos) -> None:
+    def __init__(self, titulo, url) -> None:
         self.titulo = titulo
         self.url = url
-        self.extract_Galapagos(jogos)
+        
+
+    def accessPage(self):
+        driver = webdriver.Firefox()
+        driver.get(url)
+
+
+class CrawlerGalapagos(Crawler):
+
+    def __init__(self, titulo, url, jogos) -> None:
+        Crawler.__init__(self, titulo, url)
+        self.extractGalapagos(jogos)
 
 
     
 
-    def extract_Galapagos(self, jogos):
+    def extractGalapagos(self, jogos):
         if( self.url.nomeSite == 'Galapagos'):
 
             options = Options()
@@ -36,8 +46,7 @@ class CrawlerGalapagos():
 
             ts = driver.find_elements(By.XPATH , "//article/div[contains(@class,'product-cover')]")
             print(len(ts))
-            if (len(ts) == 0):
-                return 0
+            
 
 
             href =[]
@@ -47,7 +56,7 @@ class CrawlerGalapagos():
                 #print(href)
             
             if (len(ts) == 0):
-                return 1
+                return -1
             else:
                 for page in href:
                     driver.get(page)
@@ -65,27 +74,55 @@ class CrawlerGalapagos():
                         disp = True
                         preco = tp[0].text
                     #print(ts[0].text)
+                    print(tn[0].text, disp, te[0].text, te[1].text, te[2].text, "Mundo Galapagos", self.url.nomeSite, preco)
+
                     jogos.append(Jogo(tn[0].text, disp, te[0].text, te[1].text, te[2].text, "Mundo Galapagos", self.url.nomeSite, preco))
+            driver.close()
 
-    def jogo_para_json(self, jogos):
-        dicts_json = []
-        for j in jogos:
-            dict = {
-                
-                'titulo': j.titulo,
-                'disponibilidade': j.disponibilidade,
-                'numJogadores': j.numJogadores,
-                'idade': int(j.idade.removesuffix('+')),
-                'tempoJogo': j.tempoJogo,
-                'editora': j.editora,
-                'siteFonte': j.siteFonte,
-                'preco': float(j.preco.removeprefix('R$ ').replace(',', '.'))
 
-            }
-            dicts_json.append(dict)
-        json_ = json.dumps(dicts_json , indent= 2)
-        print(json_)
-        return dicts_json
+class CrawlerPlayEasy(Crawler):
+
+    def __init__(self, titulo, url, jogos) -> None:
+        Crawler.__init__(self, titulo, url)
+        self.extractPlayEasy(jogos)
+
+
+    
+
+    def extractPlayEasy(self, jogos):
+        
+        titulo = self.titulo
+        titulo = titulo.replace(':', '')
+        jogo = Jogo('', False, '', 0, '', '', 'PlayEasy', 0.0)
             
 
-        
+        driver = webdriver.Firefox()
+        driver.get('https://www.playeasy.com.br/')
+
+        time.sleep(3)
+        elem = driver.find_element(By.XPATH, '//*[@id="search"]')
+        elem.clear()
+        elem.send_keys(titulo)
+        elem.send_keys(Keys.RETURN)
+
+        #DEPOIS TEM QUE ACHAR A DIV 'PRODUCT GRID' E FAZER UM FOR PRA CADA CC-PRODUCT-ITEM DE CADA LINHA, ATE ACHAR UM QUE TENHA 'TICKET TO RIDE' NESSE <A>: 'CC-product-grid-title-GMG151-00'
+        time.sleep(5)
+        print(len(driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li')))
+        for i in range(1, len(driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/'))):
+            if titulo in driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').text.split('\n'):
+                driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').click()
+                jogo.titulo = driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[2]/h2').text
+                jogo.disponibilidade = True if 'Em estoque' in driver.find_element(By.XPATH, '//*[@id="info-secundaria"]').text else False
+                preco = None if jogo.disponibilidade == False else driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[6]/div[1]/div[1]/div/span/span[1]').text
+                jogo.preco = float(preco.removeprefix('R$ ').replace(',', '.'))
+                jogo.numJogadores = driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[4]/div/div/table/tbody/tr[5]/td').text
+                jogo.idade = int(driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[4]/div/div/table/tbody/tr[3]/td').text.removesuffix('+'))
+                jogo.tempoJogo = driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[4]/div/div/table/tbody/tr[6]/td').text
+                jogo.editora = driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[4]/div/div/table/tbody/tr[1]/td').text
+                print(jogo)
+                jogos.append(jogo)
+        assert 'No results found.' not in driver.page_source
+
+        print(jogo)
+
+        driver.close()
