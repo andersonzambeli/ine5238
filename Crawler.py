@@ -35,7 +35,7 @@ class CrawlerGalapagos(Crawler):
             driver = webdriver.Firefox(options=options)
 
             driver.get('https://www.mundogalapagos.com.br/')
-            time.sleep(10)
+            time.sleep(5)
 
             elem = driver.find_element(By.XPATH, '//*[@id="CC-headerWidget-Search"]')
             elem.clear()
@@ -64,6 +64,16 @@ class CrawlerGalapagos(Crawler):
                     tn = driver.find_elements(By.CLASS_NAME , 'product-title')
                     #print(ts[0].text)
                     te = driver.find_elements(By.CLASS_NAME , 'info-item-text')
+                    print(len(te))
+                    if(len(te) >= 3 ):
+                        numjogs = te[0].text
+                        idade = int(te[1].text.removesuffix('+'))
+                        tempo = te[2].text
+                    else:
+                        numjogs = None
+                        idade = None
+                        tempo = None
+                        
                     tp = driver.find_elements(By.CLASS_NAME , 'best-price')
                     disp=''
                     preco =''
@@ -74,11 +84,10 @@ class CrawlerGalapagos(Crawler):
                         disp = True
                         preco = tp[0].text
                     #print(ts[0].text)
-                    print(tn[0].text, disp, te[0].text, te[1].text, te[2].text, "Mundo Galapagos", self.url.nomeSite, preco)
+                    print(tn[0].text, disp, numjogs, idade, tempo, "Mundo Galapagos", self.url.nomeSite, preco)
 
-                    jogos.append(Jogo(tn[0].text, disp, te[0].text, te[1].text, te[2].text, "Mundo Galapagos", self.url.nomeSite, preco))
+                    jogos.append(Jogo(tn[0].text, disp, numjogs, idade, tempo, "Mundo Galapagos", self.url.nomeSite, preco))
             driver.close()
-
 
 class CrawlerPlayEasy(Crawler):
 
