@@ -70,9 +70,9 @@ class CrawlerGalapagos(Crawler):
                         idade = int(te[1].text.removesuffix('+'))
                         tempo = te[2].text
                     else:
-                        numjogs = ""
-                        idade = 0
-                        tempo = ""
+                        numjogs = None
+                        idade = None
+                        tempo = None
                         
                     tp = driver.find_elements(By.CLASS_NAME , 'best-price')
                     disp=''
