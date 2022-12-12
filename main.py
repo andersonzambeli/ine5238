@@ -22,7 +22,8 @@ jogos = []
 for url in urls:
     crawler = Crawler.Crawler(tituloJogo, url)
     if url.nomeSite == 'Galapagos':
-        Crawler.CrawlerGalapagos(crawler.titulo, crawler.url, jogos)
+        print('batata')
+       # Crawler.CrawlerGalapagos(crawler.titulo, crawler.url, jogos)
     elif url.nomeSite == 'Play Easy':
         Crawler.CrawlerPlayEasy(crawler.titulo, crawler.url, jogos)
 print(jogos)
