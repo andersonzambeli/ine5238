@@ -135,7 +135,7 @@ class CrawlerPlayEasy(Crawler):
                 jogo.idade = int(driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[3]/td').text.removesuffix('+'))
                 jogo.tempoJogo = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[6]/td').text
                 jogo.editora = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[1]/td').text
-                print(jogo)
+                print(jogo.titulo, jogo.disponibilidade, jogo.numJogadores, jogo.numJogadores, jogo.idade, jogo.tempoJogo, jogo.editora, jogo.preco)
                 jogos.append(jogo)
                 driver.back()
                 time.sleep(2)
@@ -145,6 +145,6 @@ class CrawlerPlayEasy(Crawler):
                 driver.back()
 
 
-        print(jogo)
+        print(jogos)
 
         driver.close()
