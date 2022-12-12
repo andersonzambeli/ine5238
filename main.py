@@ -26,14 +26,13 @@ def writeJogosJson(jogos):
                 'tempoJogo': j.tempoJogo,
                 'editora': j.editora,
                 'siteFonte': j.siteFonte,
-                'preco': float(j.preco.removeprefix('R$ ').replace(',', '.'))
+                'preco': j.preco
 
             }
             dicts_json.append(dict)
         json_ = json.dumps(dicts_json , indent= 2, ensure_ascii=False)
         print(json_)
         return dicts_json
-
 
 
 urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy', 'https://www.playeasy.com.br/')]
