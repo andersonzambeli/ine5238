@@ -41,11 +41,23 @@ urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy',
 print("Digite o titulo do jogo:")
 tituloJogo = input()
 jogos = []
-for url in urls:
-    crawler = Crawler.Crawler(tituloJogo, url)
-    if url.nomeSite == 'Galapagos':
-        print('batata')
-       # Crawler.CrawlerGalapagos(crawler.titulo, crawler.url, jogos)
-    elif url.nomeSite == 'Play Easy':
-        Crawler.CrawlerPlayEasy(crawler.titulo, crawler.url, jogos)
+print("Digite o titulo do jogo:")
+tituloJogo = input()
+
+jogos = []
+
+
+
+crawler_galapagos = CrawlerGalapagos(tituloJogo, urls[0], jogos)
+crawler_playeasy = CrawlerPlayEasy(tituloJogo, urls[1], jogos)
+
+if  not jogos:
+    raise Exception("Jogo não encontrado")
+
+
+json_ = writeJogosJson(jogos)
+
+with open("result.json", "w") as outfile:
+    json.dump(json_, outfile, indent= 2, ensure_ascii=False)
+
 print(jogos)
