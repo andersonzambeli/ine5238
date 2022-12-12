@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 import time
 
+import Crawler
+
 
 class Url():
 
@@ -16,4 +18,12 @@ urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy',
 
 print("Digite o titulo do jogo:")
 tituloJogo = input()
-
+jogos = []
+for url in urls:
+    crawler = Crawler.Crawler(tituloJogo, url)
+    if url.nomeSite == 'Galapagos':
+        print('batata')
+        #Crawler.CrawlerGalapagos(crawler.titulo, crawler.url, jogos).extractGalapagos(jogos)
+    elif url.nomeSite == 'Play Easy':
+        Crawler.CrawlerPlayEasy(crawler.titulo, crawler.url, jogos).extractPlayEasy(jogos)
+print(jogos)
