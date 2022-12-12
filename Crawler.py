@@ -82,7 +82,8 @@ class CrawlerGalapagos(Crawler):
                         preco = None
                     else:
                         disp = True
-                        preco = tp[0].text
+                        preco = tp[0].text 
+                        preco = float(preco.removeprefix('R$ ').replace(',', '.'))
                     #print(ts[0].text)
                     print(tn[0].text, disp, numjogs, idade, tempo, "Mundo Galapagos", self.url.nomeSite, preco)
 
