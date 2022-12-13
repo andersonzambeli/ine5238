@@ -52,6 +52,6 @@ if not jogos:
 json_ = writeJogosJson(jogos)
 
 with open("result.json", "w") as outfile:
-    json.dump(json_, outfile, indent= 2, ensure_ascii=False)
+    json.dump(json_, outfile, indent=2, ensure_ascii=False)
 
 print(jogos)

@@ -134,8 +134,7 @@ class CrawlerPlayEasy(Crawler):
             except:
                 titulo = None
                 print("algo deu errado com o titulo")
-            if titulo in driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').text.split('\n')[0]:
-                disponibilidade = True if 'Em estoque' in driver.find_element(By.XPATH, '//*[@id="info-secundaria"]').text else False
+            disponibilidade = True if 'Em estoque' in driver.find_element(By.XPATH, '//*[@id="info-secundaria"]').text else False
             preco = None if disponibilidade is False else driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[6]/div[1]/div[1]/div/span/span[1]').text
             if preco:
                 preco = float(preco.removeprefix('R$ ').replace(',', '.'))
