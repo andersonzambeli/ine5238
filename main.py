@@ -35,23 +35,27 @@ def writeJogosJson(jogos):
         return dicts_json
 
 
-urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy', 'https://www.playeasy.com.br/')]
+def encontrarJogos(titulo):
+
+    urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy', 'https://www.playeasy.com.br/')]
+
+    jogos = []
+
+
+
+    crawler_galapagos = CrawlerGalapagos(titulo, urls[0], jogos)
+    crawler_playeasy = CrawlerPlayEasy(titulo, urls[1], jogos)
+
+    if  not jogos:
+        raise Exception("Jogo não encontrado")
+
+
+    json_ = writeJogosJson(jogos)
+    with open("result.json", "w") as outfile:
+        json.dump(json_, outfile, indent= 2, ensure_ascii=False)
+
 
 print("Digite o titulo do jogo:")
 tituloJogo = input()
 
-jogos = []
-
-crawler_galapagos = CrawlerGalapagos(tituloJogo, urls[0], jogos)
-crawler_playeasy = CrawlerPlayEasy(tituloJogo, urls[1], jogos)
-
-if not jogos:
-    raise Exception("Jogo não encontrado")
-
-
-json_ = writeJogosJson(jogos)
-
-with open("result.json", "w") as outfile:
-    json.dump(json_, outfile, indent=2, ensure_ascii=False)
-
-print(jogos)
+encontrarJogos(tituloJogo)
