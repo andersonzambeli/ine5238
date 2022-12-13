@@ -104,9 +104,10 @@ class CrawlerPlayEasy(Crawler):
         titulo = self.titulo
         titulo = titulo.replace(':', '')
         jogo = Jogo('', False, '', 0, '', '', 'PlayEasy', 0.0)
-            
 
-        driver = webdriver.Firefox()
+        options = Options()
+        options.add_argument("--headless")
+        driver = webdriver.Firefox(options=options)
         driver.get('https://www.playeasy.com.br/')
 
         time.sleep(3)
@@ -129,43 +130,43 @@ class CrawlerPlayEasy(Crawler):
         for i in range(1, len(i)):
             driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').click()
             try:
-                jogo.titulo = driver.find_element(By.XPATH,'/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[2]/h2').text
+                titulo = driver.find_element(By.XPATH,'/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[2]/h2').text
             except:
-                jogo.titulo = None
+                titulo = None
                 print("algo deu errado com o titulo")
-            #if titulo in driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').text.split('\n')[0]:
-            jogo.disponibilidade = True if 'Em estoque' in driver.find_element(By.XPATH, '//*[@id="info-secundaria"]').text else False
-            preco = None if jogo.disponibilidade == False else driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[6]/div[1]/div[1]/div/span/span[1]').text
+            if titulo in driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[4]/section/ul/li[{i}]').text.split('\n')[0]:
+                disponibilidade = True if 'Em estoque' in driver.find_element(By.XPATH, '//*[@id="info-secundaria"]').text else False
+            preco = None if disponibilidade is False else driver.find_element(By.XPATH, '/html/body/main/div[6]/section/div[2]/article/div[1]/div[2]/div/form/div[6]/div[1]/div[1]/div/span/span[1]').text
             if preco:
-                jogo.preco = float(preco.removeprefix('R$ ').replace(',', '.'))
+                preco = float(preco.removeprefix('R$ ').replace(',', '.'))
             else:
-                jogo.preco = None
+                preco = None
 
             num = 4
 
             # O TR MUDA PORQUE AS ESPECIFICACOES TECNICAS SAO MUITO BUGADAS, TEM QUE RESOLVER
             try:
-                jogo.numJogadores = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[5]/td').text
+                numJogadores = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[5]/td').text
             except:
-                jogo.numJogadores = None
-                print("algo deu errado com numero de jogadores de " + jogo.titulo)
+                numJogadores = None
+                print("algo deu errado com numero de jogadores de " + titulo)
             try:
-                jogo.idade = int(driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[3]/td').text.removesuffix('+'))
+                idade = int(driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[3]/td').text.removesuffix('+'))
             except:
-                jogo.idade = None
-                print("algo deu errado com idade jogador de " + jogo.titulo)
+                idade = None
+                print("algo deu errado com idade jogador de " + titulo)
             try:
-                jogo.tempoJogo = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[6]/td').text
+                tempoJogo = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[6]/td').text
             except:
-                jogo.tempoJogo = None
-                print("algo deu errado com tempo de jogo de " + jogo.titulo)
+                tempoJogo = None
+                print("algo deu errado com tempo de jogo de " + titulo)
             try:
-                jogo.editora = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[1]/td').text
+                editora = driver.find_element(By.XPATH, f'/html/body/main/div[6]/section/div[2]/article/div[{num}]/div/div/table/tbody/tr[1]/td').text
             except:
-                jogo.editora = None
-                print("algo deu errado com editora de " + jogo.titulo)
-            print(jogo.titulo, jogo.disponibilidade, jogo.numJogadores, jogo.numJogadores, jogo.idade, jogo.tempoJogo, jogo.editora, jogo.preco)
-            jogos.append(jogo)
+                editora = None
+                print("algo deu errado com editora de " + titulo)
+            print(titulo, disponibilidade, numJogadores, idade, tempoJogo, editora, preco)
+            jogos.append(Jogo(titulo, disponibilidade, numJogadores, idade, tempoJogo, editora, 'Play Easy', preco))
             driver.back()
             time.sleep(2)
 

@@ -2,9 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 import time
+import json
 
-import Crawler
-
+from Crawler import CrawlerGalapagos, CrawlerPlayEasy
 
 class Url():
 
@@ -37,21 +37,15 @@ def writeJogosJson(jogos):
 
 urls =[ Url('Galapagos', 'https://www.mundogalapagos.com.br/'), Url('Play Easy', 'https://www.playeasy.com.br/')]
 
-
-print("Digite o titulo do jogo:")
-tituloJogo = input()
-jogos = []
 print("Digite o titulo do jogo:")
 tituloJogo = input()
 
 jogos = []
-
-
 
 crawler_galapagos = CrawlerGalapagos(tituloJogo, urls[0], jogos)
 crawler_playeasy = CrawlerPlayEasy(tituloJogo, urls[1], jogos)
 
-if  not jogos:
+if not jogos:
     raise Exception("Jogo não encontrado")
 
 
